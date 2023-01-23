@@ -1,6 +1,19 @@
+#!/usr/bin/env python3
+'''
+    Simple pagination.
+'''
 import csv
 import math
 from typing import List
+
+
+def index_range(page, page_size):
+    '''
+        Returns the range of indexes for a given page.
+    '''
+    start = (page - 1) * page_size
+    end = page * page_size
+    return start, end
 
 
 class Server:
@@ -11,7 +24,7 @@ class Server:
     def __init__(self):
         self.__dataset = None
 
-    def dataset(self) -> List[List]:
+    def dataset(self) -> List[List]:  # sourcery skip: identity-comprehension
         """Cached dataset
         """
         if self.__dataset is None:
@@ -23,6 +36,9 @@ class Server:
         return self.__dataset
 
     def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
+        '''
+            Returns a page of data.
+        '''
         assert isinstance(page, int) and page > 0
         assert isinstance(page_size, int) and page_size > 0
         self.dataset()
@@ -30,10 +46,5 @@ class Server:
         if self.dataset() is None:
             return []
 
-    def index_range(page, page_size):
-        """
-            Returns the range of indexes for a given page.
-        """
-        start = (page - 1) * page_size
-        end = page * page_size
-        return start, end
+        indexRange = index_range(page, page_size)
+        return self.dataset()[indexRange[0]:indexRange[1]]
